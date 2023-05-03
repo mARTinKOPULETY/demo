@@ -24,7 +24,6 @@ public class SnakeController {
     ////////////////Read////////////////
     @GetMapping
     public ResponseEntity<List<Snake>> getAllSnakes(){
-//        List<Snake> snakeList = snakeService.getAllSnakes();
         return new ResponseEntity<>(snakeService.getAllSnakes(),HttpStatus.OK);
     }
 
