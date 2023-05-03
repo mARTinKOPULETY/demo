@@ -2,6 +2,7 @@ package cz.martinkopulety.demo.repository;
 
 
 import cz.martinkopulety.demo.entity.Snake;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 public class SnakeRepositoryTest {
@@ -20,15 +22,29 @@ public class SnakeRepositoryTest {
     @Autowired
     private SnakeRepository snakeRepository;
 
+    private Snake adder;
+    private Snake mamba;
+    @BeforeEach
+    void init(){
+        //arrange
+        adder = new Snake();
+        adder.setSnakeName("Adder");
+        adder.setSnakePic("vvvvvvvv:<");
+        adder.setUserName("Karel");
+
+        mamba = new Snake();
+        mamba.setSnakePic("vvVVVvv:<");
+        mamba.setUserName("Pepek");
+        mamba.setSnakeName("Mamba");
+
+    }
+
     ////////////////Create////////////////
     @Test
     @DisplayName("It should save the snake to the database")
     void createSnakeTest(){
         //arrange
-        Snake adder = new Snake();
-        adder.setSnakeName("Adder");
-        adder.setSnakePic("vvvvvvvv:<");
-        adder.setUserName("Karel");
+
         //act
         Snake newSnake = snakeRepository.save(adder);
         //assert
@@ -39,17 +55,8 @@ public class SnakeRepositoryTest {
     ////////////////Read////////////////
     @Test
     @DisplayName("It should return the snake list size of 2")
-    void getAllSnakes() {
+    void getAllSnakesTest() {
         //arrange
-        Snake adder = new Snake();
-        adder.setSnakeName("Adder");
-        adder.setSnakePic("vvvvvvvv:<");
-        adder.setUserName("Karel");
-
-        Snake mamba = new Snake();
-        mamba.setSnakePic("vvVVVvv:<");
-        mamba.setUserName("Pepek");
-        mamba.setSnakeName("Mamba");
 
         snakeRepository.save(adder);
         snakeRepository.save(mamba);
@@ -59,17 +66,12 @@ public class SnakeRepositoryTest {
         //assert
         assertNotNull(snakeList);
         assertEquals(2, snakeList.size());
-
-
     }
+
     @Test
     @DisplayName("It should find a snake by its id")
-    void getSnakeById(){
+    void getSnakeByIdTest(){
         //arrange
-        Snake adder = new Snake();
-        adder.setSnakeName("Adder");
-        adder.setSnakePic("vvvvvvvv:<");
-        adder.setUserName("Karel");
         snakeRepository.save(adder);
 
         //act
@@ -83,52 +85,37 @@ public class SnakeRepositoryTest {
     ////////////////Update////////////////
     @Test
     @DisplayName("It should update snake with name VIPER")
-    void  updateSnake(){
+    void  updateSnakeTest(){
         //arrange
-        Snake adder = new Snake();
-        adder.setSnakeName("Adder");
-        adder.setSnakePic("vvvvvvvv:<");
-        adder.setUserName("Karel");
         snakeRepository.save(adder);
         Snake existingSnake = snakeRepository.findById(adder.getSnakeId()).get();
 
         //act
         existingSnake.setSnakeName("Viper");
         Snake updatedSnake = snakeRepository.save(existingSnake);
+
         //assert
         assertNotNull(updatedSnake);
         assertEquals("Viper", updatedSnake.getSnakeName() );
-
     }
 
     ////////////////Delete////////////////
     @Test
     @DisplayName("It should delete snake")
-    void deleteSnake(){
+    void deleteSnakeTest(){
         //arrange
-        Snake adder = new Snake();
-        adder.setSnakeName("Adder");
-        adder.setSnakePic("vvvvvvvv:<");
-        adder.setUserName("Karel");
-
-        Snake mamba = new Snake();
-        mamba.setSnakePic("vvVVVvv:<");
-        mamba.setUserName("Pepek");
-        mamba.setSnakeName("Mamba");
-
         snakeRepository.save(adder);
         Long id =  adder.getSnakeId();
         snakeRepository.save(mamba);
+
         //act
-        snakeRepository.delete(mamba);
+        snakeRepository.delete(adder);
         Optional<Snake> existingSnake= snakeRepository.findById(id);
         List<Snake> snakeList = snakeRepository.findAll();
 
-
         //assert
-        assertNotNull(snakeList);
+        assertThat(existingSnake).isEmpty();
         assertEquals(1, snakeList.size());
-
     }
 
 
