@@ -29,7 +29,7 @@ public class SnakeRepositoryTest {
         //arrange
         adder = new Snake();
         adder.setSnakeName("Adder");
-        adder.setSnakePic("vvvvvvvv:<");
+        adder.setSnakePic("vvvWvvvvv:<");
         adder.setUserName("Karel");
 
         mamba = new Snake();
@@ -66,6 +66,40 @@ public class SnakeRepositoryTest {
         //assert
         assertNotNull(snakeList);
         assertEquals(2, snakeList.size());
+    }
+
+
+    @Test
+    @DisplayName("It should find one snake by picture W")
+    void getSnakesByPicTest() {
+        //arrange
+
+        snakeRepository.save(adder);
+        snakeRepository.save(mamba);
+
+        String pic = "W";
+        //act
+        List<Snake> snakeList = snakeRepository.findBySnakePicContaining(pic);
+
+        //assert
+        assertNotNull(snakeList);
+        assertEquals(1, snakeList.size());
+    }
+    @Test
+    @DisplayName("It should find one snake by name m")
+    void getSnakesByNameTest() {
+        //arrange
+
+        snakeRepository.save(adder);
+        snakeRepository.save(mamba);
+
+        String name = "m";
+        //act
+        List<Snake> snakeList = snakeRepository.findBySnakeNameContaining(name);
+
+        //assert
+        assertNotNull(snakeList);
+        assertEquals(1, snakeList.size());
     }
 
     @Test

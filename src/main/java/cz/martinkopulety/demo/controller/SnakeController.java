@@ -32,6 +32,16 @@ public class SnakeController {
         return new ResponseEntity<>(snakeService.getSnakeById(id),HttpStatus.OK);
     }
 
+    @GetMapping("/picture/{pic}")
+    public ResponseEntity<List<Snake>> getSnakeByPic(@PathVariable String pic){
+        return new ResponseEntity<>(snakeService.getSnakeByPic(pic),HttpStatus.OK);
+    }
+
+    @GetMapping("/name/{name}")
+    public ResponseEntity<List<Snake>> getSnakeByName(@PathVariable String name){
+        return new ResponseEntity<>(snakeService.getSnakeByName(name), HttpStatus.OK);
+    }
+
     ////////////////Update////////////////
     @PutMapping("/{id}")
     public ResponseEntity<Snake> updateSnake(@PathVariable Long id, @RequestBody Snake snake){

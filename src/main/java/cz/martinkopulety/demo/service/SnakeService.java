@@ -29,6 +29,14 @@ public class SnakeService {
                new RuntimeException("Snake with id "+ id + " was not found."));
     }
 
+    public List<Snake> getSnakeByPic(String partOfSnakePic){
+        return snakeRepository.findBySnakePicContaining(partOfSnakePic);
+    }
+
+    public List<Snake> getSnakeByName(String partOfSnakeName){
+        return snakeRepository.findBySnakeNameContaining(partOfSnakeName);
+    }
+
     ////////////////Update////////////////
     public Snake updateSnake(Snake snake, Long id){
         Snake existingSnake = snakeRepository.findById(id).orElseThrow(() ->
