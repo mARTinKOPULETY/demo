@@ -3,6 +3,7 @@ package cz.martinkopulety.demo.servie;
 import cz.martinkopulety.demo.entity.Snake;
 import cz.martinkopulety.demo.repository.SnakeRepository;
 import cz.martinkopulety.demo.service.SnakeService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,24 +19,40 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+
 @ExtendWith(MockitoExtension.class)
 public class SnakeServiceTest {
+
     @InjectMocks
     private SnakeService snakeService;
 
     @Mock
     private SnakeRepository snakeRepository;
 
-    ////////////////CREATE////////////////
+    private Snake adder;
+    private Snake mamba;
 
+    @BeforeEach
+    void init(){
+        //arrange
+        adder = new Snake();
+        adder.setSnakeId(1L);
+        adder.setSnakeName("Adder");
+        adder.setSnakePic("vvvWvvvvv:<");
+        adder.setUserName("Karel");
+
+        mamba = new Snake();
+        mamba.setSnakeId(2L);
+        mamba.setSnakePic("vvVVVvv:<");
+        mamba.setUserName("Pepek");
+        mamba.setSnakeName("Mamba");
+    }
+
+    ////////////////CREATE////////////////
     @Test
     @DisplayName("It should save a snake object into a database")
     void createSnakeTest(){
         //arrange
-        Snake  adder = new Snake();
-        adder.setSnakeName("Adder");
-        adder.setSnakePic("vvvWvvvvv:<");
-        adder.setUserName("Karel");
         when(snakeRepository.save(any(Snake.class))).thenReturn(adder);
         //act
         Snake createdSnake = snakeService.createSnake(adder);
@@ -43,24 +60,13 @@ public class SnakeServiceTest {
         assertNotNull(createdSnake);
         assertEquals("Adder", createdSnake.getSnakeName());
     }
-    ////////////////READ - Get All ////////////////
 
+    ////////////////READ - Get All ////////////////
     @Test
     @DisplayName("It should return size 2 of snake list")
     void getAllSnakesTest(){
         //arrange
-        Snake  adder = new Snake();
-        adder.setSnakeName("Adder");
-        adder.setSnakePic("vvvWvvvvv:<");
-        adder.setUserName("Karel");
-
-        Snake mamba = new Snake();
-        mamba.setSnakePic("vvVVVvv:<");
-        mamba.setUserName("Pepek");
-        mamba.setSnakeName("Mamba");
-
         List<Snake> snakeList = new ArrayList<>();
-
         snakeList.add(adder);
         snakeList.add(mamba);
         when(snakeRepository.findAll()).thenReturn(snakeList);
@@ -69,19 +75,12 @@ public class SnakeServiceTest {
         //assert
         assertNotNull(allSnakes);
         assertEquals(2, snakeList.size());
-
     }
     ////////////////READ- Get by id////////////////
     @Test
     @DisplayName("It should return one snake")
     void getSnakeByIdTest(){
         //arrange
-        Snake  adder = new Snake();
-        adder.setSnakeId(1L);
-        adder.setSnakeName("Adder");
-        adder.setSnakePic("vvvWvvvvv:<");
-        adder.setUserName("Karel");
-
         when(snakeRepository.findById(anyLong())).thenReturn(Optional.of(adder));
         //act
         Snake foundSnake = snakeService.getSnakeById(1L);
@@ -94,31 +93,18 @@ public class SnakeServiceTest {
     @DisplayName("It should throws exception")
     void getSnakeByIdNoFound(){
         //arrange
-        Snake  adder = new Snake();
-        adder.setSnakeId(1L);
-        adder.setSnakeName("Adder");
-        adder.setSnakePic("vvvWvvvvv:<");
-        adder.setUserName("Karel");
-
         when(snakeRepository.findById(1L)).thenReturn(Optional.of(adder));
-
         //act&assert
         assertThrows(RuntimeException.class, () -> snakeService.getSnakeById(2L));
     }
+
     ////////////////READ- Get by picture////////////////
     @Test
     @DisplayName("It should returns one snake")
     void getSnakeByPicReturnOneSnakeTest(){
         //arrange
-        Snake  adder = new Snake();
-        adder.setSnakeName("Adder");
-        adder.setSnakePic("vvvWvvvvv:<");
-        adder.setUserName("Karel");
-
         List<Snake> snakeList = new ArrayList<>();
-
         snakeList.add(adder);
-
         when(snakeRepository.findBySnakePicContaining("v")).thenReturn(snakeList);
         //act
         List<Snake> snakesByPic = snakeService.getSnakeByPic("v");
@@ -126,25 +112,14 @@ public class SnakeServiceTest {
         assertNotNull(snakesByPic);
         assertEquals(1,snakeList.size());
     }
+
     @Test
     @DisplayName("It should returns two snakes")
     void getSnakeByPicReturnTwoSnakesTest(){
         //arrange
-        Snake  adder = new Snake();
-        adder.setSnakeName("Adder");
-        adder.setSnakePic("vvvWvvvvv:<");
-        adder.setUserName("Karel");
-
-        Snake mamba = new Snake();
-        mamba.setSnakePic("vvVVVvv:<");
-        mamba.setUserName("Pepek");
-        mamba.setSnakeName("Mamba");
-
         List<Snake> snakeList = new ArrayList<>();
-
         snakeList.add(adder);
         snakeList.add(mamba);
-
         when(snakeRepository.findBySnakePicContaining("v")).thenReturn(snakeList);
         //act
         List<Snake> snakesByPic = snakeService.getSnakeByPic("v");
@@ -161,51 +136,32 @@ public class SnakeServiceTest {
                 snakeService.getSnakeByPic("a"));
 
     }
+
     ////////////////READ- Get by name////////////////
     @Test
     @DisplayName("It should retrn one snake.")
     void getSnakeByNameShouldReturnOneSnake(){
         //arrange
-        Snake  adder = new Snake();
-        adder.setSnakeName("Adder");
-        adder.setSnakePic("vvvWvvvvv:<");
-        adder.setUserName("Karel");
-
         List<Snake> snakeList = new ArrayList<>();
-
         snakeList.add(adder);
-
         when(snakeRepository.findBySnakeNameContaining("a")).thenReturn(snakeList);
         //act
         List<Snake> foundSnakes= snakeService.getSnakeByName("a");
         //assert
         assertEquals(1,foundSnakes.size());
-
-
     }
+
     @Test
     @DisplayName("It should returns two snakes")
     void getSnakeByNameReturnTwoSnakesTest() {
         //arrange
-        Snake adder = new Snake();
-        adder.setSnakeName("Adder");
-        adder.setSnakePic("vvvWvvvvv:<");
-        adder.setUserName("Karel");
-
-        Snake mamba = new Snake();
-        mamba.setSnakePic("vvVVVvv:<");
-        mamba.setUserName("Pepek");
-        mamba.setSnakeName("Mamba");
-
         List<Snake> snakeList = new ArrayList<>();
-
         snakeList.add(adder);
         snakeList.add(mamba);
-
         when(snakeRepository.findBySnakeNameContaining(anyString())).thenReturn(snakeList);
         //act
-       List<Snake> foundSnakes= snakeService.getSnakeByName("a");
-       //assert
+        List<Snake> foundSnakes= snakeService.getSnakeByName("a");
+        //assert
         assertEquals(2, foundSnakes.size());
     }
 
@@ -220,12 +176,6 @@ public class SnakeServiceTest {
     @DisplayName("It should update name of the snake.")
     void updateSnakeTest(){
         //arrange
-        Snake adder = new Snake();
-        adder.setSnakeId(1L);
-        adder.setSnakeName("Adder");
-        adder.setSnakePic("vvvWvvvvv:<");
-        adder.setUserName("Karel");
-
         when(snakeRepository.findById(1L)).thenReturn(Optional.of(adder));
         when(snakeRepository.save(any(Snake.class))).thenReturn(adder);
         adder.setSnakeName("Viper");
@@ -240,12 +190,6 @@ public class SnakeServiceTest {
     @DisplayName("It should delete the snake")
     void deleteSnakeTest(){
         //arrange
-        Snake adder = new Snake();
-        adder.setSnakeId(1L);
-        adder.setSnakeName("Adder");
-        adder.setSnakePic("vvvWvvvvv:<");
-        adder.setUserName("Karel");
-
         when(snakeRepository.findById(1L)).thenReturn(Optional.of(adder));
         doNothing().when(snakeRepository).delete(any(Snake.class));
         //act
@@ -253,8 +197,6 @@ public class SnakeServiceTest {
         //assert
         verify(snakeRepository, times(1)).delete(adder);
     }
-
-
 }
 
 
