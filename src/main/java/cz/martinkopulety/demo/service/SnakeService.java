@@ -5,6 +5,8 @@ import cz.martinkopulety.demo.repository.SnakeRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class SnakeService {
@@ -29,12 +31,20 @@ public class SnakeService {
                new RuntimeException("Snake with id "+ id + " was not found."));
     }
 
-    public List<Snake> getSnakeByPic(String partOfSnakePic){
-        return snakeRepository.findBySnakePicContaining(partOfSnakePic);
+    public List<Snake> getSnakeByPic(String partOfSnakePic) {
+        List<Snake>  snakesByPic = snakeRepository.findBySnakePicContaining(partOfSnakePic);
+        if (snakesByPic.isEmpty()){
+            throw new NoSuchElementException("No snakes found with the given picture.");
+        }
+        return snakesByPic;
     }
 
-    public List<Snake> getSnakeByName(String partOfSnakeName){
-        return snakeRepository.findBySnakeNameContaining(partOfSnakeName);
+    public List<Snake> getSnakeByName(String partOfSnakeName) {
+        List<Snake> snakesByName = snakeRepository.findBySnakeNameContaining(partOfSnakeName);
+        if (snakesByName.isEmpty()) {
+            throw new NoSuchElementException("No snakes found with the given name.");
+        }
+        return snakesByName;
     }
 
     ////////////////Update////////////////
