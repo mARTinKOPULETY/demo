@@ -111,6 +111,7 @@ public class SnakeIntegrationTest {
 
     @Test
     void iTestGetSnakeByPic_shouldThrowsException(){
+       // TODO Throwing correct exception. NoSuchElementException is expected, but InternalServerError was thrown in  method for finding snake py picture.
         /*
         //It throws different exception. Following test works.
         HttpServerErrorException.InternalServerError exception =   assertThrows(
@@ -137,6 +138,8 @@ public class SnakeIntegrationTest {
 
     @Test
     void iTestGetSnakeByName_shouldThrowsException(){
+        // TODO Throwing correct exception. NoSuchElementException is expected, but InternalServerError was thrown in  method for finding snake py name.
+
         /*
         //It throws different exception. Following test works.
         HttpServerErrorException.InternalServerError exception =   assertThrows(
